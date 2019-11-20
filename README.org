@@ -1,0 +1,23 @@
+* photoslurp
+
+#+BEGIN_SRC 
+photoslurp source dest
+#+END_SRC
+
+Will take all ~jpg~ and ~mp4~ files in ~source~ and produce a file structure like this:
+
+#+BEGIN_SRC 
+├── 2018
+│   ├── 20180626_140929_abfa6637.jpg
+│   ├── 20180818_091744_dfbbed77.jpg
+│   ├── 20181101_202916_18258e82.jpg
+│   └── ...
+├── 2019
+│   ├── 20190303_152229_c6c2fa76.jpg
+│   ├── 20190513_080818_61a09cc1.jpg
+│   ├── 20190619_162528_9df4a24e.mp4
+│   └── ...
+...
+#+END_SRC
+
+Timestamps are generated from file metadata if available, falling back to file modification/creatiion time if not.
