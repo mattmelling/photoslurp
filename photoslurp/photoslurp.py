@@ -131,5 +131,9 @@ def main(source: ("source", "positional"),
         move(filename, new_filename)
 
 
-if __name__ == '__main__':
+def _main():
     plac.call(main)
+
+
+if __name__ == '__main__':
+    _main()
