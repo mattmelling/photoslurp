@@ -3,9 +3,10 @@ from setuptools import setup
 
 def main():
     setup(name='photoslurp',
+          packages=['photoslurp'],
           entry_points={
               'console_scripts': [
-                  'photoslurp = photoslurp:_main'
+                  'photoslurp = photoslurp.photoslurp:_main'
               ]})
 
 
