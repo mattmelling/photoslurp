@@ -4,7 +4,7 @@ import exifread
 import av
 import os
 import plac
-from shutil import move
+from shutil import move, copy
 
 
 FIELDS = [
@@ -110,12 +110,16 @@ def create_filename(filename):
 
 
 def main(source: ("source", "positional"),
-         dest: ("dest", "positional")):
+         dest: ("dest", "positional"),
+         dry_run: ("dry-run", "flag", "n"),
+         mv: ("move", "flag", "m")):
     for filename in iterfiles(source):
         filename = os.path.join(source, filename)
         new_filename = create_filename(filename)
         if new_filename is None:
-            print("Skipping {}".format(filename))
+            print("{dry}skipping {filename}".format(
+                filename=filename,
+                dry="[dry-run] " if dry_run else ""))
             continue
 
         year = new_filename[0:4]
@@ -124,11 +128,23 @@ def main(source: ("source", "positional"),
 
         new_filename = os.path.join(dest, year, new_filename)
         if os.path.isfile(new_filename):
-            print("{} already exists".format(new_filename))
+            print("{dry}{filename} already exists".format(
+                dry="[dry-run] " if dry_run else "",
+                filename=new_filename))
             continue
 
-        print("{} => {}".format(filename, new_filename))
-        move(filename, new_filename)
+        print("{dry}{mode} {old} => {new}".format(
+                dry="[dry-run] " if dry_run else "",
+                mode="move" if mv else "copy",
+                old=filename,
+                new=filename))
+
+        if dry_run:
+            continue
+        if mv:
+            move(filename, new_filename)
+        else:
+            copy(filename, new_filename)
 
 
 def _main():
