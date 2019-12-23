@@ -137,7 +137,7 @@ def main(source: ("source", "positional"),
                 dry="[dry-run] " if dry_run else "",
                 mode="move" if mv else "copy",
                 old=filename,
-                new=filename))
+                new=new_filename))
 
         if dry_run:
             continue
