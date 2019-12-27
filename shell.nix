@@ -1,8 +1,7 @@
-with import <nixpkgs> {};
-stdenv.mkDerivation {
-  name = "photoslurp";
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.mkShell {
   buildInputs = [
-    (python37.withPackages(ps: with ps; [
+    (pkgs.python37.withPackages(ps: with ps; [
       exifread
       av
       plac
