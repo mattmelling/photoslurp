@@ -46,6 +46,16 @@ def get_timestamp(f, name):
     return None
 
 
+# fall back to file modification time or creation time, whichever is
+# earlier - this deals with an issue observed with copied files
+def get_earlier_mtime_or_ctime(name):
+    mtime = datetime.utcfromtimestamp(os.path.getmtime(name))
+    ctime = datetime.utcfromtimestamp(os.path.getctime(name))
+    if ctime < mtime:
+        return ctime
+    return mtime
+
+
 def get_exif_timestamp(f, name):
     tags = exifread.process_file(f)
     f.seek(0)
@@ -60,19 +70,16 @@ def get_exif_timestamp(f, name):
                 except ValueError:
                     pass
 
-    # fall back to file modification time or creation time, whichever is
-    # earlier - this deals with an issue observed with copied files
-    mtime = datetime.utcfromtimestamp(os.path.getmtime(name))
-    ctime = datetime.utcfromtimestamp(os.path.getctime(name))
-    if ctime < mtime:
-        return ctime
-    return mtime
+    return get_earlier_mtime_or_ctime(name)
 
 
 def get_mp4_timestamp(f, name):
     container = av.open(name)
-    raw = container.metadata['creation_time'].split('.')[0]
-    return datetime.strptime(raw, "%Y-%m-%dT%H:%M:%S")
+    try:
+        raw = container.metadata['creation_time'].split('.')[0]
+        return datetime.strptime(raw, "%Y-%m-%dT%H:%M:%S")
+    except KeyError:
+        return get_earlier_mtime_or_ctime(name)
 
 
 def get_hash(f):
