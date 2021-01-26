@@ -1,4 +1,5 @@
-with import <nixpkgs> {};
+{ pkgs ? import <nixpkgs> {} }:
+with pkgs;
 pkgs.python37Packages.buildPythonApplication rec {
   name = "photoslurp";
   src = ./.;
